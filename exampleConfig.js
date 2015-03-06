@@ -12,7 +12,7 @@ Optional Variables:
 
   backends:         an array of backends to load. Each backend must exist
                     by name in the directory backends/. If not specified,
-                    the default graphite backend will be loaded. 
+                    the default graphite backend will be loaded.
                     * example for console and graphite:
                     [ "./backends/console", "./backends/graphite" ]
   server:           the server to load. The server must exist by name in the directory
@@ -56,6 +56,7 @@ Optional Variables:
   keyNameSanitize:  sanitize all stat names on ingress [default: true]
                     If disabled, it is up to the backends to sanitize keynames
                     as appropriate per their storage requirements.
+  whitelistFlush:   List of aggregate metrics that can be flushed to the backend. [default: ["count", "count_ps", "mean", "upper", "lower"]]
 
   console:
     prettyprint:    whether to prettyprint the console backend
@@ -109,4 +110,5 @@ Optional Variables:
 , graphiteHost: "graphite.example.com"
 , port: 8125
 , backends: [ "./backends/graphite" ]
+, whitelistFlush: ["count", "count_ps", "mean", "upper", "lower"]
 }
