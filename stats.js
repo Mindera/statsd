@@ -155,13 +155,13 @@ function flushMetrics() {
 }
 
 // apply a filter to the metrics that will be flushed to the backend
-// to remove metrics and are not included in the configuration: config.whitelistFlush
+// to remove metrics that are not included in the configuration: config.whitelistFlush
 function whitelistFlush(metrics) {
     if (conf.whitelistFlush) {
         for (var metric in metrics.timer_data) {
             for (var key in metrics.timer_data[metric]) {
                 if (conf.whitelistFlush.indexOf(key) < 0) {
-                    delete metrics.timer_data[metric][key];
+                    delete(metrics.timer_data[metric][key]);
                 }
             }
         }
