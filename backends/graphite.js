@@ -113,7 +113,8 @@ var flush_stats = function graphite_flush(ts, metrics) {
     var value = counters[key];
     var valuePerSecond = counter_rates[key]; // pre-calculated "per second" rate
     var keyName = sk(key);
-    var namespace = counterNamespace.concat(keyName);
+    var keyParts = keyName.split(".");
+    var namespace = [keyParts.shift()].concat(counterNamespace).concat(keyParts.join("."));
 
     if (legacyNamespace === true) {
       statString += namespace.join(".")   + globalSuffix + valuePerSecond + ts_suffix;
@@ -131,7 +132,8 @@ var flush_stats = function graphite_flush(ts, metrics) {
   }
 
   for (key in timer_data) {
-    var namespace = timerNamespace.concat(sk(key));
+    var keyParts = sk(key).split(".");
+    var namespace = [keyParts.shift()].concat(timerNamespace).concat(keyParts.join("."));
     var the_key = namespace.join(".");
 
     for (timer_data_key in timer_data[key]) {
@@ -151,13 +153,15 @@ var flush_stats = function graphite_flush(ts, metrics) {
   }
 
   for (key in gauges) {
-    var namespace = gaugesNamespace.concat(sk(key));
+    var keyParts = sk(key).split(".");
+    var namespace = [keyParts.shift()].concat(gaugesNamespace).concat(keyParts.join("."));
     statString += namespace.join(".") + globalSuffix + gauges[key] + ts_suffix;
     numStats += 1;
   }
 
   for (key in sets) {
-    var namespace = setsNamespace.concat(sk(key));
+    var keyParts = sk(key).split(".");
+    var namespace = [keyParts.shift()].concat(setsNamespace).concat(keyParts.join("."));
     statString += namespace.join(".") + '.count' + globalSuffix + sets[key].values().length + ts_suffix;
     numStats += 1;
   }
