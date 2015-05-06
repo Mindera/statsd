@@ -77,6 +77,7 @@ Optional Variables:
     globalSuffix:     global suffix to use for sending stats to graphite [default: ""]
                       This is particularly useful for sending per host stats by
                       settings this value to: require('os').hostname().split('.')[0]
+    prefixAsNamespace: Use the first prefix of each metric as the root namespace. Default: false
 
   repeater:         an array of hashes of the for host: and port:
                     that details other statsd servers to which the received

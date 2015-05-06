@@ -37,6 +37,7 @@ var globalKeySanitize = true;
 
 // set up namespaces
 var legacyNamespace  = true;
+var prefixAsNamespace  = false;
 var globalNamespace  = [];
 var counterNamespace = [];
 var timerNamespace   = [];
@@ -114,7 +115,7 @@ var flush_stats = function graphite_flush(ts, metrics) {
     var valuePerSecond = counter_rates[key]; // pre-calculated "per second" rate
     var keyName = sk(key);
     var keyParts = keyName.split(".");
-    var namespace = [keyParts.shift()].concat(counterNamespace).concat(keyParts.join("."));
+    var namespace = (prefixAsNamespace ? [keyParts.shift()] : []).concat(counterNamespace).concat(keyParts.join("."));
 
     if (legacyNamespace === true) {
       statString += namespace.join(".")   + globalSuffix + valuePerSecond + ts_suffix;
@@ -133,7 +134,7 @@ var flush_stats = function graphite_flush(ts, metrics) {
 
   for (key in timer_data) {
     var keyParts = sk(key).split(".");
-    var namespace = [keyParts.shift()].concat(timerNamespace).concat(keyParts.join("."));
+    var namespace = (prefixAsNamespace ? [keyParts.shift()] : []).concat(timerNamespace).concat(keyParts.join("."));
     var the_key = namespace.join(".");
 
     for (timer_data_key in timer_data[key]) {
@@ -154,14 +155,14 @@ var flush_stats = function graphite_flush(ts, metrics) {
 
   for (key in gauges) {
     var keyParts = sk(key).split(".");
-    var namespace = [keyParts.shift()].concat(gaugesNamespace).concat(keyParts.join("."));
+    var namespace = (prefixAsNamespace ? [keyParts.shift()] : []).concat(gaugesNamespace).concat(keyParts.join("."));
     statString += namespace.join(".") + globalSuffix + gauges[key] + ts_suffix;
     numStats += 1;
   }
 
   for (key in sets) {
     var keyParts = sk(key).split(".");
-    var namespace = [keyParts.shift()].concat(setsNamespace).concat(keyParts.join("."));
+    var namespace = (prefixAsNamespace ? [keyParts.shift()] : []).concat(setsNamespace).concat(keyParts.join("."));
     statString += namespace.join(".") + '.count' + globalSuffix + sets[key].values().length + ts_suffix;
     numStats += 1;
   }
@@ -207,6 +208,7 @@ exports.init = function graphite_init(startup_time, config, events, logger) {
   prefixSet       = config.graphite.prefixSet;
   globalSuffix    = config.graphite.globalSuffix;
   legacyNamespace = config.graphite.legacyNamespace;
+  prefixAsNamespace = config.graphite.prefixAsNamespace;
   prefixStats     = config.prefixStats;
 
   // set defaults for prefixes & suffix
